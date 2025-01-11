@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>User Information</title>
 </head>
-<body style="background-color: #9de2ff; ">
+<body style="background-color: #9de2ff;">
 
 <section class="w-100 h-100 px-4 py-5" style="background-color: #9de2ff; border-radius: .5rem .5rem 0 0;">
     <div class="row d-flex justify-content-center">
@@ -19,11 +18,12 @@
                     <!-- User Details -->
                     <div class="d-flex">
                         <div class="flex-shrink-0">
-                            <img src="https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-6/432469005_1774739339714097_4449507038576999807_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=bti5Qst1GcwQ7kNvgHY3HJr&_nc_oc=Adj__b4RsIZn2wIJg2X_4D-thh_ui8pB31yJs_yFS8Kef-QsCr13ryZJUcYKYh7eMIM&_nc_zt=23&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AYGi9-TDLu5ALDS5dSQIPLK&oh=00_AYBGvCWVGBrAD2LJMw1WmjhnJlzjkR1RW70ITrWxCwfrPw&oe=67872720"
-                                 alt="Profile Picture" class="img-fluid" style="width: 180px; border-radius: 10px;">
+                            <!-- Hiển thị ảnh từ user.imgURL -->
+                            <img th:src="${user.imgURL}" alt="Profile Picture" class="img-fluid" style="width: 180px; border-radius: 10px;">
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-1">Tran Ngoc Tien</h5>
+                            <!-- Hiển thị tên -->
+                            <h5 class="mb-1" th:text="${user.name}">User Name</h5>
                             <p class="mb-2 pb-1 text-muted">Student</p>
                             <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
                                 <div>
@@ -48,32 +48,23 @@
                     <!-- Additional Info -->
                     <hr class="my-4">
                     <h6>Contact Information</h6>
-                    <p class="text-muted mb-1"><strong>Email:</strong> danny.mcloan@example.com</p>
-                    <p class="text-muted mb-1"><strong>Phone:</strong> +123 456 789</p>
-                    <p class="text-muted mb-1"><strong>Location:</strong> San Francisco, CA</p>
+                    <p class="text-muted mb-1"><strong>Email:</strong> <span th:text="${user.email}">example@example.com</span></p>
+                    <p class="text-muted mb-1"><strong>Phone:</strong> <span th:text="${user.phone}">+123 456 789</span></p>
+                    <p class="text-muted mb-1"><strong>Class:</strong> <span th:text="${user.classSchool}">ST22C</span></p>
 
                     <hr class="my-4">
                     <h6>About Me</h6>
-                    <p class="text-muted mb-4">
-                        I'm a passionate journalist with over 10 years of experience covering technology, startups, and global news.
-                        I enjoy writing stories that inspire and inform readers.
-                    </p>
+                    <p class="text-muted mb-4">I'm currently a student, passionate about learning and developing software solutions.</p>
 
                     <h6>Hobbies</h6>
-                    <p class="text-muted mb-4">Traveling, Photography, Blogging</p>
+                    <p class="text-muted mb-4">Programming, Reading, Playing Sports</p>
 
                     <!-- Social Links -->
                     <h6>Connect with me</h6>
                     <div class="d-flex">
-                        <a href="#" class="btn btn-outline-dark btn-sm me-2">
-                            <i class="fab fa-twitter"></i> Twitter
-                        </a>
-                        <a href="#" class="btn btn-outline-dark btn-sm me-2">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="#" class="btn btn-outline-dark btn-sm">
-                            <i class="fab fa-facebook"></i> Facebook
-                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-sm me-2">Twitter</a>
+                        <a href="#" class="btn btn-outline-dark btn-sm me-2">LinkedIn</a>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Facebook</a>
                     </div>
                 </div>
             </div>
