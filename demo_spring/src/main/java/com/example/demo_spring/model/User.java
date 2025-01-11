@@ -20,6 +20,9 @@ public class User {
         this.imgURL = imgURL;
     }
 
+    public User() {
+    }
+
     public int getId() {
         return id;
     }

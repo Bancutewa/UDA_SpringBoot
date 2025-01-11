@@ -9,7 +9,9 @@
     <title>User Information</title>
 </head>
 <body style="background-color: #9de2ff;">
-
+<div class="mb-4 text-center">
+    <a th:href="@{'/home'}" class="btn btn-primary btn-sm">Home</a>
+</div>
 <section class="w-100 h-100 px-4 py-5" style="background-color: #9de2ff; border-radius: .5rem .5rem 0 0;">
     <div class="row d-flex justify-content-center">
         <div class="col col-md-9 col-lg-7 col-xl-6">
@@ -66,6 +68,7 @@
                         <a href="#" class="btn btn-outline-dark btn-sm me-2">LinkedIn</a>
                         <a href="#" class="btn btn-outline-dark btn-sm">Facebook</a>
                     </div>
+                    <a th:href="@{'/editUser/' + ${user.id}}" class="btn btn-warning btn-sm">Edit</a>
                 </div>
             </div>
         </div>
