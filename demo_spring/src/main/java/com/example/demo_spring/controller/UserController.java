@@ -47,7 +47,8 @@ public class UserController {
     // Xử lý thêm người dùng
     @PostMapping("/addUser")
     public String addUser(@ModelAttribute("user") User user) {
-        userService.addUser(user);
+        User newuser = userService.addUser(user);
+        System.out.println(newuser);
         return "redirect:/home";
     }
 
@@ -70,7 +71,7 @@ public class UserController {
         if (!isUpdated) {
             throw new RuntimeException("User not found!");
         }
-
+        System.out.println(updatedUser);
         return "redirect:/userInfo/" + id;
     }
 
