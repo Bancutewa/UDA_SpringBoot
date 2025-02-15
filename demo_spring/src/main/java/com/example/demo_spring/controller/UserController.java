@@ -1,6 +1,8 @@
 package com.example.demo_spring.controller;
 
+import com.example.demo_spring.model.Company;
 import com.example.demo_spring.model.User;
+import com.example.demo_spring.service.CompanyService;
 import com.example.demo_spring.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final CompanyService companyService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CompanyService companyService) {
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/home")
@@ -37,18 +41,20 @@ public class UserController {
         return "userInfo";
     }
 
-    // Hiển thị form thêm người dùng
+    // Hiển thị form thêm người dùng (có danh sách Company để chọn)
     @GetMapping("/addUser")
     public String showAddUserForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("companies", companyService.getAllCompanies()); // Lấy danh sách công ty
         return "addUser";
     }
 
-    // Xử lý thêm người dùng
+    // Xử lý thêm người dùng vào Company
     @PostMapping("/addUser")
-    public String addUser(@ModelAttribute("user") User user) {
-        User newuser = userService.addUser(user);
-        System.out.println(newuser);
+    public String addUser(@ModelAttribute("user") User user, @RequestParam("companyId") int companyId) {
+        Optional<Company> optionalCompany = companyService.getCompanyById(companyId);
+        optionalCompany.ifPresent(user::setCompany); // Gán Company cho User nếu có
+        userService.addUser(user);
         return "redirect:/home";
     }
 
@@ -61,22 +67,24 @@ public class UserController {
         }
         User user = optionalUser.get();
         model.addAttribute("user", user);
+        model.addAttribute("companies", companyService.getAllCompanies()); // Lấy danh sách công ty
         return "editUser";
     }
 
-    // Xử lý cập nhật người dùng
+    // Xử lý cập nhật người dùng (bao gồm Company)
     @PostMapping("/editUser/{id}")
-    public String updateUser(@PathVariable("id") int id, @ModelAttribute User updatedUser) {
+    public String updateUser(@PathVariable("id") int id, @ModelAttribute User updatedUser, @RequestParam("companyId") int companyId) {
+        Optional<Company> optionalCompany = companyService.getCompanyById(companyId);
+        optionalCompany.ifPresent(updatedUser::setCompany); // Gán Company cho User nếu có
         boolean isUpdated = userService.updateUser(id, updatedUser);
         if (!isUpdated) {
             throw new RuntimeException("User not found!");
         }
-        System.out.println(updatedUser);
         return "redirect:/userInfo/" + id;
     }
 
-    // Xử lý xóa người dùng
-    @DeleteMapping("/deleteUser/{id}")
+    // Xóa người dùng
+    @PostMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         boolean isDeleted = userService.deleteUser(id);
         if (!isDeleted) {

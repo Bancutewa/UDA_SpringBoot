@@ -53,6 +53,11 @@
                     <p class="text-muted mb-1"><strong>Email:</strong> <span th:text="${user.email}">example@example.com</span></p>
                     <p class="text-muted mb-1"><strong>Phone:</strong> <span th:text="${user.phone}">+123 456 789</span></p>
                     <p class="text-muted mb-1"><strong>Class:</strong> <span th:text="${user.classSchool}">ST22C</span></p>
+                    <!-- Hiển thị thông tin công ty -->
+                    <p class="text-muted mb-1"><strong>Company:</strong>
+                        <span th:if="${user.company != null}" th:text="${user.company.companyName}">No Company</span>
+                        <span th:unless="${user.company != null}">No Company</span>
+                    </p>
 
                     <hr class="my-4">
                     <h6>About Me</h6>

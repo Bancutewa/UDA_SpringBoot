@@ -15,8 +15,8 @@
 
   <!-- Nút Add User và Add Company -->
   <div class="mb-4 text-center">
-    <a href="/addUser" class="btn btn-success btn-lg">Thêm Người Dùng</a>
-    <a href="/addCompany" class="btn btn-primary btn-lg">Thêm Công Ty</a>
+    <a href="/addUser" class="btn btn-success btn-lg">➕ Thêm Người Dùng</a>
+    <a href="/companies" class="btn btn-primary btn-lg">🏢   Công Ty</a>
   </div>
 
   <!-- Bảng người dùng -->
@@ -29,6 +29,7 @@
       <th>Số Điện Thoại</th>
       <th>Email</th>
       <th>Ảnh</th>
+      <th>Công Ty</th>
       <th>Hành Động</th>
     </tr>
     </thead>
@@ -44,10 +45,14 @@
         <img th:src="${user.imgURL}" alt="User Image" class="img-thumbnail" style="width: 100px;">
       </td>
       <td>
-        <a th:href="@{'/userInfo/' + ${user.id}}" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
+        <span th:if="${user.company != null}" th:text="${user.company.companyName}">Công ty ABC</span>
+        <span th:unless="${user.company != null}" class="text-muted">Chưa có công ty</span>
+      </td>
+      <td>
+        <a th:href="@{'/userInfo/' + ${user.id}}" class="btn btn-primary btn-sm">👀 Xem Chi Tiết</a>
 
         <form th:action="@{'/deleteUser/' + ${user.id}}" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">Xóa</button>
+          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">🗑 Xóa</button>
         </form>
       </td>
     </tr>

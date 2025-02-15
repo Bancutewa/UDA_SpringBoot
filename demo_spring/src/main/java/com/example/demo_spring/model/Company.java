@@ -13,8 +13,7 @@ public class Company {
     @Column
     private String companyName;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id")
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 
     public List<User> getUsers() {
