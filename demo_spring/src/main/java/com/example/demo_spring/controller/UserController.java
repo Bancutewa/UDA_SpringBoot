@@ -4,6 +4,11 @@ import com.example.demo_spring.model.Company;
 import com.example.demo_spring.model.User;
 import com.example.demo_spring.service.CompanyService;
 import com.example.demo_spring.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +18,63 @@ import java.util.Optional;
 
 @Controller
 public class UserController {
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     private final UserService userService;
     private final CompanyService companyService;
 
+
     public UserController(UserService userService, CompanyService companyService) {
         this.userService = userService;
         this.companyService = companyService;
+    }
+
+
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register"; // Trả về trang đăng ký (register.html)
+    }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute User user) {
+        userService.registerUser(user.getName(), user.getClassSchool(),user.getPhone(),user.getEmail(),user.getImgURL(), user.getPassword(), "USER");
+
+        return "redirect:/login"; // Sau khi đăng ký thành công, chuyển hướng đến trang đăng nhập
+    }
+
+    @GetMapping("/login")
+    public String showLoginForm() {
+        System.out.println("📌 Truy cập trang đăng nhập");
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam String email, @RequestParam String password, Model model) {
+        System.out.println("📌 Đang xử lý đăng nhập...");
+        System.out.println("📩 Email nhập vào: " + email);
+        System.out.println("🔑 Mật khẩu nhập vào: " + password);
+
+        if (email == null || email.isEmpty()) {
+            System.out.println("❌ Lỗi: Email rỗng!");
+            model.addAttribute("error", "Email không được để trống!");
+            return "login";
+        }
+
+        try {
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);
+            System.out.println("📌 Đang gọi authenticationManager.authenticate()...");
+            Authentication authentication = authenticationManager.authenticate(authRequest);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            System.out.println("✅ Đăng nhập thành công: " + email);
+            return "redirect:/home";
+        } catch (Exception e) {
+            System.out.println("❌ Đăng nhập thất bại: " + e.getMessage());
+            model.addAttribute("error", "Đăng nhập thất bại! Kiểm tra email và mật khẩu.");
+            return "login";
+        }
     }
 
     @GetMapping("/home")

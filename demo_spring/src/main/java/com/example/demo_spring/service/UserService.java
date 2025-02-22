@@ -5,6 +5,7 @@ import com.example.demo_spring.model.User;
 import com.example.demo_spring.repository.CompanyRepository;
 import com.example.demo_spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,15 @@ public class UserService {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // Đăng ký user mới
+    public void registerUser(String name, String classSchool, String phone, String email, String imgURL, String password, String role) {
+        User newUser = new User(name, classSchool, phone, email, imgURL, passwordEncoder.encode(password), role, null);
+        userRepository.save(newUser);
+    }
+
     // Lấy danh sách tất cả người dùng
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -26,6 +36,8 @@ public class UserService {
 
     // Thêm mới user
     public User addUser(User user) {
+        // Mã hóa mật khẩu trước khi lưu
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -34,7 +46,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    // Cập nhật thông tin user
+    // Cập nhật thông tin user (bao gồm mật khẩu, nhưng chỉ mã hóa nếu được thay đổi)
     public boolean updateUser(int id, User updatedUser) {
         Optional<User> existingUserOptional = userRepository.findById(id);
         if (existingUserOptional.isPresent()) {
@@ -44,14 +56,20 @@ public class UserService {
             existingUser.setPhone(updatedUser.getPhone());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setImgURL(updatedUser.getImgURL());
+            existingUser.setRole(updatedUser.getRole());
+
+            // Nếu password được thay đổi, mã hóa nó trước khi lưu
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+
             userRepository.save(existingUser);
             return true;
         }
         return false;
     }
 
-    // Xóa user
-    // Xóa user và cập nhật company liên quan
+    // Xóa user và cập nhật liên kết với company
     public boolean deleteUser(int id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -71,7 +89,6 @@ public class UserService {
         return false;
     }
 
-
     // Lưu user vào một công ty
     public void saveUser(User user, Integer companyId) {
         if (companyId != null) {
@@ -80,7 +97,4 @@ public class UserService {
         }
         userRepository.save(user);
     }
-    // Xóa User khỏi công ty
-
-
 }
