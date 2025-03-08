@@ -1,6 +1,8 @@
 package com.example.demo_spring;
 
 import com.example.demo_spring.service.UserDetailsServiceIml;
+import com.example.demo_spring.JwtAuthenticationFilter;
+import com.example.demo_spring.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceIml();
@@ -31,34 +37,24 @@ public class WebSecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(provider);
+        return new ProviderManager(List.of(provider));
     }
 
     @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+    }
+
+    @Bean
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF nếu dùng API REST
+                .csrf(csrf -> csrf.disable()) // Tắt CSRF cho API RESTful
+                
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/register", "/login").permitAll()
-                        .requestMatchers("/home").authenticated() // Phải đăng nhập mới truy cập được home
-                        .requestMatchers("/userInfo/**").hasAnyRole("USER", "ADMIN") // Chỉ USER hoặc ADMIN mới truy cập
-                        .requestMatchers("/addUser", "/editUser/**", "/deleteUser/**", "/companies/**", "/addCompany/**", "/companyUsers/**","/selectUsersForCompany/**" ).hasAnyRole( "ADMIN") // Chỉ USER hoặc ADMIN mới truy cập
-                        .anyRequest().authenticated() // Các API khác cần đăng nhập
+                        .requestMatchers("/api/v1/users/register", "/api/v1/users/login").permitAll() // API đăng ký & đăng nhập
+                        .anyRequest().authenticated() // Các request khác yêu cầu xác thực
                 )
-                .formLogin(form -> form
-                        .loginPage("/login") // Trang đăng nhập
-                        .loginProcessingUrl("/login") // Xử lý POST từ form
-                        .usernameParameter("email") // Cấu hình lấy username từ `email`
-                        .passwordParameter("password") // Cấu hình lấy password từ `password`
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                );
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Thêm filter JWT
 
         return http.build();
     }

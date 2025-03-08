@@ -1,10 +1,13 @@
 package com.example.demo_spring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Table(name = "COMPANY")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // ✅ Bỏ qua Hibernate proxy
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,6 +16,7 @@ public class Company {
     @Column
     private String companyName;
 
+    @JsonIgnore // ⛔ Ẩn danh sách users khi trả về JSON để tránh lỗi
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 

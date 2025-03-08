@@ -25,6 +25,9 @@ public class UserService {
 
     // Đăng ký user mới
     public void registerUser(String name, String classSchool, String phone, String email, String imgURL, String password, String role) {
+        if (role == null || role.isEmpty()) {
+            role = "USER";
+        }
         User newUser = new User(name, classSchool, phone, email, imgURL, passwordEncoder.encode(password), role, null);
         userRepository.save(newUser);
     }
