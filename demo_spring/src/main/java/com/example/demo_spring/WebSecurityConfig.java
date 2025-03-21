@@ -49,10 +49,13 @@ public class WebSecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Tắt CSRF cho API RESTful
-                
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/users/register", "/api/v1/users/login").permitAll() // API đăng ký & đăng nhập
-                        .anyRequest().authenticated() // Các request khác yêu cầu xác thực
+                        .requestMatchers("/api/v1/users/register", "/api/v1/users/login").permitAll() // Cho phép đăng ký & đăng nhập không cần auth
+                        .requestMatchers("/h2-console/**").permitAll() // Cho phép truy cập H2 Console
+                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN") // Chỉ ADMIN mới có quyền quản lý user
+                        .requestMatchers("/api/v1/companies/**").hasRole("ADMIN") // Chỉ ADMIN mới có quyền quản lý company
+                        .anyRequest().authenticated() // Các request khác cần xác thực
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Thêm filter JWT
 

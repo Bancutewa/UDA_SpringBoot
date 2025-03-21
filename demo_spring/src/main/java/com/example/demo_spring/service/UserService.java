@@ -25,6 +25,9 @@ public class UserService {
 
     // Đăng ký user mới
     public void registerUser(String name, String classSchool, String phone, String email, String imgURL, String password, String role) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email đã tồn tại!");
+        }
         if (role == null || role.isEmpty()) {
             role = "USER";
         }
@@ -100,4 +103,12 @@ public class UserService {
         }
         userRepository.save(user);
     }
+
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 }
