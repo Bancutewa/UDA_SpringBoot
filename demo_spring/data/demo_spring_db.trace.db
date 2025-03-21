@@ -98,3 +98,12 @@ Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Wrong user name
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:522)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
 	... 94 more
+2025-03-21 23:39:48.325718+07:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMGURL CHARACTER VARYING(255)": "'https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-1/483607161_2026760221178673... (504)"; SQL statement:
+update user_demo set class_school=?,company_id=?,email=?,imgurl=?,name=?,password=?,phone=?,role=? where id=? [22001-232]
+2025-03-21 23:40:06.564919+07:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMGURL CHARACTER VARYING(255)": "'https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-1/483607161_2026760221178673... (504)"; SQL statement:
+update user_demo set class_school=?,company_id=?,email=?,imgurl=?,name=?,password=?,phone=?,role=? where id=? [22001-232]
+2025-03-21 23:41:08.893178+07:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMGURL CHARACTER VARYING(255)": "'https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/483607161_2026760221178673... (479)"; SQL statement:
+update user_demo set class_school=?,company_id=?,email=?,imgurl=?,name=?,password=?,phone=?,role=? where id=? [22001-232]
